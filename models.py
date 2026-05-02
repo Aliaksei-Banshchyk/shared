@@ -8,11 +8,11 @@ SCHEMA = "Aliaksei_Banshchyk"
 
 @event.listens_for(Base.metadata, "before_create")
 def create_schema(target, connection, **kw):
-    connection.execute(text(
-        f"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{SCHEMA}') "
-        f"EXEC('CREATE SCHEMA [{SCHEMA}]')"
-    ))
-
+    if connection.dialect.name == "mssql":
+        connection.execute(text(
+            f"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = '{SCHEMA}') "
+            f"EXEC('CREATE SCHEMA [{SCHEMA}]')"
+        ))
 
 class User(Base):
     __tablename__ = "users"
